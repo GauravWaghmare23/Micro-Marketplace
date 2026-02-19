@@ -1,0 +1,67 @@
+version: '3.8'
+
+services:
+  # MongoDB Database
+  mongodb:
+    image: mongo:6.0-alpine
+    container_name: micro-marketplace-mongodb
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+      MONGO_INITDB_DATABASE: micro-marketplace
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - micro-marketplace-network
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API Server
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: micro-marketplace-backend
+    restart: unless-stopped
+    environment:
+      MONGO_URI: mongodb://admin:password@mongodb:27017/micro-marketplace?authSource=admin
+      JWT_SECRET: ${JWT_SECRET:-your-super-secure-jwt-secret-key-change-in-production}
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 5000
+    ports:
+      - "5000:5000"
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - micro-marketplace-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    command: npm run dev
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  micro-marketplace-network:
+    driver: bridge
+
+# Docker commands:
+# Build and start: docker-compose up -d
+# Stop services: docker-compose down
+# View logs: docker-compose logs -f [service_name]
+# Rebuild: docker-compose up -d --build
+# Remove volumes: docker-compose down -v
