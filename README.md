@@ -1,4 +1,4 @@
-# Micro Marketplace Monorepo
+# Micro Marketplace
 
 A production-grade multi-platform marketplace application with role-based admin system.
 
@@ -14,19 +14,7 @@ This monorepo contains four subprojects:
 ### Architecture
 
 ```
-┌─────────────────┐
-│   Mobile App    │
-│  (Expo/React)   │
-└────────┬────────┘
-         │
-<!--
-    Expanded README for Micro Marketplace monorepo
-    This file is intentionally long to provide exhaustive developer and operator guidance.
-    It includes architecture, setup, API reference, deployment recipes, CI examples,
-    troubleshooting, security checklist, performance tips, testing, and contribution guidelines.
--->
-
-# Micro Marketplace — Monorepo
+# Micro Marketplace 
 
 Comprehensive, production-grade multi-platform marketplace reference application. This monorepo
 contains four coordinated projects that together provide a full-stack marketplace experience:
@@ -142,7 +130,7 @@ npm run dev    # starts server on PORT (default 5000)
 ```bash
 cd ../web
 npm install
-echo "VITE_API_URL=http://localhost:5000" > .env
+echo "VITE_API_URL=http://localhost:4000" > .env
 npm run dev
 ```
 
@@ -151,7 +139,7 @@ npm run dev
 ```bash
 cd ../web-admin
 npm install
-echo "VITE_API_URL=http://localhost:5000" > .env
+echo "VITE_API_URL=http://localhost:4000" > .env
 npm run dev
 ```
 
@@ -165,7 +153,7 @@ npm start   # opens Expo dev tools
 
 Access URLs (local defaults)
 
-- Backend API: http://localhost:5000
+- Backend API: http://localhost:4000
 - Web customer app: http://localhost:5173 (Vite)
 - Admin dashboard: http://localhost:5174 (Vite)
 
@@ -179,7 +167,7 @@ Backend (`backend/.env` example)
 MONGO_URI=mongodb://localhost:27017/micro-marketplace
 JWT_SECRET=super-secret-key-at-least-32-chars
 NODE_ENV=development
-PORT=5000
+PORT=4000
 DEFAULT_ADMIN_EMAIL=gauravwaghmare17384@gmail.com
 DEFAULT_ADMIN_PWD=123456789
 DEFAULT_ADMIN_NAME=Admin
@@ -188,7 +176,7 @@ DEFAULT_ADMIN_NAME=Admin
 Frontend (Vite) — `web/.env` and `web-admin/.env`
 
 ```
-VITE_API_URL=http://localhost:5000
+VITE_API_URL=http://localhost:4000
 VITE_APP_TITLE="Micro Marketplace"
 ```
 
@@ -539,118 +527,8 @@ Continuous testing
 
 ---
 
-## 13. CI / CD example (GitHub Actions)
 
-Below is a concise GitHub Actions example for running tests and building web projects. Use secrets for production deploys.
-
-`.github/workflows/ci.yml`
-
-```yaml
-name: CI
-
-on: [push, pull_request]
-
-jobs:
-    backend-tests:
-        runs-on: ubuntu-latest
-        steps:
-            - uses: actions/checkout@v4
-            - name: Use Node.js 18
-                uses: actions/setup-node@v4
-                with:
-                    node-version: 18
-            - name: Install backend deps
-                run: |
-                    cd backend
-                    npm ci
-            - name: Run backend tests
-                run: |
-                    cd backend
-                    npm test -- --coverage
-
-    web-build:
-        runs-on: ubuntu-latest
-        needs: backend-tests
-        steps:
-            - uses: actions/checkout@v4
-            - name: Node.js
-                uses: actions/setup-node@v4
-                with:
-                    node-version: 18
-            - name: Build web
-                run: |
-                    cd web
-                    npm ci
-                    npm run build
-            - name: Build web-admin
-                run: |
-                    cd web-admin
-                    npm ci
-                    npm run build
-```
-
-Deployment steps will vary by target (Heroku, Netlify, Vercel, Docker-based infra). Use environment secrets and atomic deployments.
-
----
-
-## 14. Docker & production deployment notes
-
-This repo can be containerized. Below are sample Dockerfile ideas and docker-compose for local production testing.
-
-Sample backend `Dockerfile`
-
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci --only=production
-COPY . .
-ENV NODE_ENV=production
-CMD ["node", "dist/server.js"]
-```
-
-`docker-compose.yml` (local staging)
-
-```yaml
-version: '3.8'
-services:
-    mongo:
-        image: mongo:6
-        restart: always
-        volumes:
-            - ./data/db:/data/db
-        ports:
-            - 27017:27017
-
-    backend:
-        build: ./backend
-        environment:
-            - MONGO_URI=mongodb://mongo:27017/micro-marketplace
-            - JWT_SECRET=${JWT_SECRET}
-        ports:
-            - 5000:5000
-        depends_on:
-            - mongo
-
-    web:
-        build: ./web
-        environment:
-            - VITE_API_URL=http://localhost:5000
-        ports:
-            - 5173:5173
-        depends_on:
-            - backend
-```
-
-Production tips
-
-- Use a managed MongoDB (Atlas) or a hardened self-hosted cluster.
-- Serve web apps behind a CDN and enable HTTP/2.
-- Use a process manager (PM2) or container orchestrator for backend processes.
-
----
-
-## 15. Troubleshooting — common issues and fixes
+## 13. Troubleshooting — common issues and fixes
 
 Problem: `500 Internal Server Error` when calling `/auth/login` from frontend
 
@@ -674,7 +552,7 @@ Network / CORS
 
 ---
 
-## 16. Contributing guidelines (expanded)
+## 14. Contributing guidelines (expanded)
 
 How to propose changes
 
@@ -697,7 +575,7 @@ Review checklist for PRs
 
 ---
 
-## 17. Release & changelog notes
+## 15. Release & changelog notes
 
 We recommend using semantic versioning and a CHANGELOG.md generated from commit messages.
 
@@ -709,7 +587,7 @@ Release process
 
 ---
 
-## 18. Appendix — useful commands and examples
+## 16. Appendix — useful commands and examples
 
 General
 
