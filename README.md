@@ -96,6 +96,88 @@ npm run dev
 
 Backend runs on: `http://localhost:5000`
 
+---
+
+## Database Seeding
+
+The backend includes a comprehensive seeding system that populates the database with sample data for development and testing purposes.
+
+### Running the Seeds
+
+```bash
+cd backend
+npm run seed
+```
+
+This will:
+1. Connect to your MongoDB database
+2. Create sample users (if they don't exist)
+3. Generate 1000 sample products
+4. Create a default admin user
+
+### Seed Data Overview
+
+#### Sample Users
+
+The seed creates two sample users (only if no other users exist):
+
+| Name  | Email                | Password     | Role |
+|-------|---------------------|--------------|------|
+| Alice | alice@example.com   | password123  | user |
+| Bob   | bob@example.com     | password123  | user |
+
+#### Default Admin User
+
+The admin user is always created/updated (idempotent operation):
+
+| Name  | Email                           | Password   | Role  |
+|-------|----------------------------------|------------|-------|
+| Admin | gauravwaghmare17384@gmail.com   | 123456789  | admin |
+
+#### Sample Products
+
+The seed generates **1000 sample products** with:
+- Sequential titles: "Sample Product 1" through "Sample Product 1000"
+- Random prices: $10 - $210
+- Auto-generated descriptions
+- Random images from picsum.photos
+- Distributed among existing users
+
+### Customizing Seed Data via Environment Variables
+
+You can customize the admin user credentials by setting these environment variables in your `.env` file:
+
+```
+DEFAULT_ADMIN_EMAIL=your-admin@example.com
+DEFAULT_ADMIN_PWD=your-secure-password
+DEFAULT_ADMIN_NAME=Super Admin
+```
+
+**Example `.env` file:**
+
+```
+MONGO_URI=mongodb://localhost:27017/micro-marketplace
+JWT_SECRET=your-super-secret-key-min-32-chars
+NODE_ENV=development
+DEFAULT_ADMIN_EMAIL=myadmin@company.com
+DEFAULT_ADMIN_PWD=secureAdmin123
+DEFAULT_ADMIN_NAME=System Administrator
+```
+
+### Seed Behavior
+
+The seed script is **idempotent**, meaning it can be run multiple times without creating duplicates:
+
+1. **Sample Users**: Only created if the database has exactly 1 user (the admin). This prevents duplicate sample users in development.
+2. **Products**: Only created if no products exist. Skips if products already exist.
+3. **Admin User**: Always checks for existence. If exists and not admin, promotes to admin. If doesn't exist, creates new.
+
+### Troubleshooting Seeds
+
+- **"Users already exist, skipping user seed"**: Normal behavior - sample users are only created when there's exactly 1 user (the admin).
+- **"Products already exist, skipping product seed"**: Normal behavior - products are only created on first run.
+- **"Seeding failed: MongoNetworkError"**: Ensure MongoDB is running and check your `MONGO_URI` in `.env`.
+
 ### 2. Customer Frontend Setup
 
 ```bash
@@ -466,5 +548,6 @@ For issues or questions:
 ## License
 
 MIT License - See individual projects for details
-#   M i c r o - M a r k e t p l a c e  
+#   M i c r o - M a r k e t p l a c e 
+ 
  

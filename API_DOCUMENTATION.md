@@ -5,7 +5,7 @@ Complete API documentation for the Micro Marketplace Admin System.
 ## Base URL
 
 ```
-http://localhost:5000
+http://localhost:4000
 ```
 
 ## Authentication
@@ -21,7 +21,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
 **Endpoint**: `POST /auth/login`
 
 ```bash
-curl -X POST http://localhost:5000/auth/login \
+curl -X POST http://localhost:4000/auth/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "gauravwaghmare17384@gmail.com",

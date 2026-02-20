@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const BASE = import.meta.env.VITE_API_URL || 'https://micro-marketplace-backend-xtn9.onrender.com';
 
 const instance = axios.create({
   baseURL: BASE,
