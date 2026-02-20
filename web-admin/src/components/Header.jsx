@@ -40,16 +40,22 @@ export function Header() {
         </button>
 
         <div className="relative">
-          <button onClick={() => setOpen((v) => !v)} className="flex items-center gap-2 px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
-            <FiUser />
-            <span className="text-sm">{user?.email?.split('@')[0] || 'Admin'}</span>
-            <FiChevronDown />
-          </button>
+          {user ? (
+            <>
+              <button onClick={() => setOpen((v) => !v)} className="flex items-center gap-2 px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
+                <FiUser />
+                <span className="text-sm">{user?.email?.split('@')[0] || 'Admin'}</span>
+                <FiChevronDown />
+              </button>
 
-          {open && (
-            <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg py-2">
-              <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Logout</button>
-            </div>
+              {open && (
+                <div className="absolute right-0 mt-2 w-40 bg-white dark:bg-gray-800 rounded-md shadow-lg py-2">
+                  <button onClick={handleLogout} className="w-full text-left px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700">Logout</button>
+                </div>
+              )}
+            </>
+          ) : (
+            <button onClick={() => navigate('/login')} className="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">Login</button>
           )}
         </div>
       </div>

@@ -11,7 +11,14 @@ export default function Login(){
       const {data} = await api.post('/auth/login', {email, password});
       localStorage.setItem('token', data.token);
       window.location.href = '/';
-    }catch(err){ setMsg(err.response?.data?.message || 'Login failed') }
+    }catch(err){
+      // show detailed info for debugging server errors
+      // eslint-disable-next-line no-console
+      console.error('Login error', err);
+      const status = err.response?.status;
+      const serverMsg = err.response?.data?.message || err.response?.data || err.message;
+      setMsg(status ? `Error ${status}: ${serverMsg}` : serverMsg || 'Login failed');
+    }
   }
   return (
     <div className="max-w-md mx-auto">

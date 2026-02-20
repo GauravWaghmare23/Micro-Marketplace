@@ -7,6 +7,14 @@ import { motion, AnimatePresence } from 'framer-motion'
 export default function Navbar() {
   const { theme, toggle } = useContext(ThemeContext)
   const [scrolled, setScrolled] = useState(false)
+  const [token, setToken] = useState(null)
+
+  useEffect(() => {
+    setToken(localStorage.getItem('token'))
+    const onStorage = () => setToken(localStorage.getItem('token'))
+    window.addEventListener('storage', onStorage)
+    return () => window.removeEventListener('storage', onStorage)
+  }, [])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -33,6 +41,22 @@ export default function Navbar() {
           <button onClick={toggle} aria-label="Toggle theme" className="p-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
             {theme === 'light' ? <FiMoon /> : <FiSun />}
           </button>
+          {token ? (
+            <>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('token')
+                  localStorage.removeItem('user')
+                  window.location.href = '/'
+                }}
+                className="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="px-3 py-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">Login</Link>
+          )}
           <button className="p-2 rounded-md sm:hidden">
             <FiMenu />
           </button>
